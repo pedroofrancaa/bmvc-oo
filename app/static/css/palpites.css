@@ -250,8 +250,9 @@ h1 {
 
 .grade-palpites {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(480px, 580px));
     gap: 18px;
+    justify-content: center;
 }
 
 .card-palpite,
@@ -286,14 +287,17 @@ h1 {
 
 .placar {
     min-height: 125px;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 18px;
+    position: relative;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 150px;
 }
 
 .placar strong {
+    max-width: calc(50% - 75px);
     font-size: clamp(1rem, 2.5vw, 1.55rem);
+    line-height: 1.15;
 }
 
 .placar strong:last-child {
@@ -301,10 +305,20 @@ h1 {
 }
 
 .placar b {
-    padding: 12px 15px;
+    min-width: 92px;
+    min-height: 60px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     background: var(--preto);
     color: var(--branco);
     font-size: clamp(1.25rem, 3vw, 1.8rem);
+    line-height: 1;
+    text-align: center;
     white-space: nowrap;
 }
 

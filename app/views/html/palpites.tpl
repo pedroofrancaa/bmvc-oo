@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Palpites dos torcedores para os jogos da Copa do Mundo de 2026.">
     <title>Palpites | Copa do Mundo 2026</title>
-    <link rel="stylesheet" href="/static/css/palpites.css?v=6">
+    <link rel="stylesheet" href="/static/css/palpites.css?v=9">
     <script src="/static/js/palpites.js?v=6" defer></script>
 </head>
 <body>
