@@ -1,0 +1,4 @@
+__pycache__/
+*.py[cod]
+app/controllers/db/*.sqlite3-shm
+app/controllers/db/*.sqlite3-wal

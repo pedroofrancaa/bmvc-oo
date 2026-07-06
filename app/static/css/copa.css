@@ -100,6 +100,10 @@ nav a:hover {
     justify-self: end;
 }
 
+.nav-palpites {
+    display: none;
+}
+
 .botao-preto,
 .botao-branco {
     min-height: 46px;
@@ -1013,6 +1017,10 @@ footer > a:last-child {
 
     .cabecalho-cta {
         display: none;
+    }
+
+    .nav-palpites {
+        display: block;
     }
 
     .menu-botao {

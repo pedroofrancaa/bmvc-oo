@@ -1,5 +1,6 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const { equipes, partidas } = window.COPA_DADOS;
+document.addEventListener("DOMContentLoaded", async () => {
+    const resposta = await fetch("/copa/dados");
+    const { equipes, partidas } = await resposta.json();
 
     const menuBotao = document.querySelector("#menu-botao");
     const menu = document.querySelector("#menu");
@@ -17,9 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const nomesSituacao = {
-        classificada: "Nas oitavas",
-        oitavas: "Na disputa",
-        "eliminada-oitavas": "Eliminada nas oitavas de 32",
+        classificada: "Classificada",
+        quartas: "Nas quartas",
+        oitavas: "Nas oitavas",
+        "eliminada-oitavas": "Eliminada nas oitavas",
+        "eliminada-32": "Eliminada na fase de 32",
         "eliminada-grupos": "Eliminada na fase de grupos"
     };
 

@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Painel completo e atualizado da Copa do Mundo de 2026.">
     <title>Copa do Mundo 2026 | Jogos, seleções e resultados</title>
-    <link rel="stylesheet" href="/static/css/copa.css?v=6">
-    <script src="/static/js/copa-dados.js?v=6" defer></script>
-    <script src="/static/js/copa.js?v=6" defer></script>
+    <link rel="stylesheet" href="/static/css/copa.css?v=8">
+    <script src="/static/js/copa.js?v=8" defer></script>
 </head>
 <body>
     <div class="faixa-superior">
-        <p>ATUALIZADO EM 29 JUN 2026 · 16H21 BRT</p>
+        <p>ATUALIZADO EM 05 JUL 2026 · 20H09 BRT</p>
         <p>CANADÁ · MÉXICO · ESTADOS UNIDOS</p>
     </div>
 
@@ -28,8 +27,9 @@
             <a href="#selecoes">48 seleções</a>
             <a href="#jogos">104 jogos</a>
             <a href="#sedes">Sedes</a>
+            <a class="nav-palpites" href="/palpites">Palpites</a>
         </nav>
-        <a class="botao-preto cabecalho-cta" href="#jogos">Ver calendário</a>
+        <a class="botao-preto cabecalho-cta" href="/palpites">Palpites <span aria-hidden="true">→</span></a>
     </header>
 
     <main>
@@ -37,7 +37,7 @@
             <img src="/static/img/copa-hero.png?v=6" alt="Jogadores disputando a bola durante uma partida em estádio lotado" fetchpriority="high">
             <div class="hero-sombra"></div>
             <div class="hero-conteudo">
-                <span class="selo-ao-vivo"><i></i> FASE DE 32</span>
+                <span class="selo-ao-vivo"><i></i> OITAVAS DE FINAL</span>
                 <h1 id="titulo-principal">GUIA DA<br>COPA 2026.</h1>
                 <p>Resultados, 48 seleções e o calendário completo das 104 partidas em um só lugar.</p>
                 <a class="botao-branco" href="#agora">Ver status atual <span aria-hidden="true">↓</span></a>
@@ -47,35 +47,35 @@
         <section class="agora" id="agora" aria-labelledby="titulo-agora">
             <div class="agora-cabecalho">
                 <div>
-                    <p class="rotulo">STATUS EM 29 DE JUNHO</p>
+                    <p class="rotulo">STATUS EM 05 DE JULHO</p>
                     <h2 id="titulo-agora">A Copa agora</h2>
                 </div>
-                <span class="atualizacao">Atualizado às 16h21 BRT</span>
+                <span class="atualizacao">Atualizado às 20h09 BRT</span>
             </div>
 
             <div class="destaques-agora">
                 <article class="placar-destaque brasil-placar">
-                    <div class="placar-meta"><span>ENCERRADO</span><span>PARTIDA 76</span></div>
-                    <p>FASE DE 32 · HOUSTON</p>
+                    <div class="placar-meta"><span>ENCERRADO</span><span>PARTIDA 91</span></div>
+                    <p>OITAVAS DE FINAL · NOVA YORK/NOVA JERSEY</p>
                     <div class="placar-times">
                         <strong><img src="/static/img/flags/br.svg" alt=""> Brasil</strong>
-                        <b>2 — 1</b>
-                        <strong>Japão <img src="/static/img/flags/jp.svg" alt=""></strong>
+                        <b>1 — 2</b>
+                        <strong>Noruega <img src="/static/img/flags/no.svg" alt=""></strong>
                     </div>
-                    <small>Brasil classificado para as oitavas de final.</small>
+                    <small>Brasil eliminado nas oitavas de final.</small>
                 </article>
 
                 <div class="status-lateral">
                     <article>
-                        <span class="status-numero">02</span>
-                        <div><b>CLASSIFICADOS</b><p>Canadá e Brasil já estão entre os 16.</p></div>
+                        <span class="status-numero">03</span>
+                        <div><b>NAS QUARTAS</b><p>França, Países Baixos e Noruega já avançaram.</p></div>
+                    </article>
+                    <article>
+                        <span class="status-numero">01</span>
+                        <div><b>JOGO HOJE</b><p>México x Inglaterra fecha as oitavas.</p></div>
                     </article>
                     <article>
                         <span class="status-numero">14</span>
-                        <div><b>VAGAS EM DISPUTA</b><p>A fase de 32 termina em 3 de julho.</p></div>
-                    </article>
-                    <article>
-                        <span class="status-numero">30</span>
                         <div><b>JOGOS RESTANTES</b><p>Incluindo a decisão em 19 de julho.</p></div>
                     </article>
                 </div>
@@ -87,9 +87,8 @@
                     <span>Horários de Brasília</span>
                 </div>
                 <div class="hoje-grade">
-                    <article><span>ENCERRADO</span><b><span><img src="/static/img/flags/br.svg" alt=""> Brasil</span><em>2–1</em><span>Japão <img src="/static/img/flags/jp.svg" alt=""></span></b><p>Houston</p></article>
-                    <article><span>17H30</span><b><span><img src="/static/img/flags/de.svg" alt=""> Alemanha</span><em>×</em><span>Paraguai <img src="/static/img/flags/py.svg" alt=""></span></b><p>Boston</p></article>
-                    <article><span>22H00</span><b><span><img src="/static/img/flags/nl.svg" alt=""> Países Baixos</span><em>×</em><span>Marrocos <img src="/static/img/flags/ma.svg" alt=""></span></b><p>Monterrey</p></article>
+                    <article><span>ENCERRADO</span><b><span><img src="/static/img/flags/br.svg" alt=""> Brasil</span><em>1–2</em><span>Noruega <img src="/static/img/flags/no.svg" alt=""></span></b><p>Nova York/Nova Jersey</p></article>
+                    <article><span>22H00</span><b><span><img src="/static/img/flags/mx.svg" alt=""> México</span><em>×</em><span>Inglaterra <img src="/static/img/flags/gb-eng.svg" alt=""></span></b><p>Cidade do México</p></article>
                 </div>
             </div>
         </section>
@@ -182,7 +181,7 @@
 
     <footer>
         <a class="marca" href="/copa"><span>COPA DO MUNDO 2026</span></a>
-        <p>Projeto acadêmico BMVC · Dados: <a href="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/match-schedule-fixtures-results-teams-stadiums" target="_blank" rel="noopener">FIFA</a> · Página independente.</p>
+        <p>Calendário e resultados: <a href="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/match-schedule-fixtures-results-teams-stadiums" target="_blank" rel="noopener">FIFA</a> · Guia independente.</p>
         <a href="#titulo-principal">Voltar ao topo ↑</a>
     </footer>
 </body>
