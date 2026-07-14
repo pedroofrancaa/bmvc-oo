@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Painel completo e atualizado da Copa do Mundo de 2026.">
     <title>Copa do Mundo 2026 | Jogos, seleções e resultados</title>
-    <link rel="stylesheet" href="/static/css/copa.css?v=8">
-    <script src="/static/js/copa.js?v=8" defer></script>
+    <link rel="stylesheet" href="/static/css/copa.css?v=9">
+    <script src="/static/js/copa.js?v=9" defer></script>
 </head>
 <body>
     <div class="faixa-superior">
-        <p>ATUALIZADO EM 05 JUL 2026 · 20H09 BRT</p>
+        <p>ATUALIZADO EM 13 JUL 2026 · 19H46 BRT</p>
         <p>CANADÁ · MÉXICO · ESTADOS UNIDOS</p>
     </div>
 
@@ -28,6 +28,12 @@
             <a href="#jogos">104 jogos</a>
             <a href="#sedes">Sedes</a>
             <a class="nav-palpites" href="/palpites">Palpites</a>
+            % if usuario:
+            <a href="/palpites/meus">Meus palpites</a>
+            <form class="nav-sair" action="/logout" method="post"><button type="submit">Sair ({{usuario['nome']}})</button></form>
+            % else:
+            <a href="/login">Entrar</a>
+            % end
         </nav>
         <a class="botao-preto cabecalho-cta" href="/palpites">Palpites <span aria-hidden="true">→</span></a>
     </header>
@@ -37,7 +43,7 @@
             <img src="/static/img/copa-hero.png?v=6" alt="Jogadores disputando a bola durante uma partida em estádio lotado" fetchpriority="high">
             <div class="hero-sombra"></div>
             <div class="hero-conteudo">
-                <span class="selo-ao-vivo"><i></i> OITAVAS DE FINAL</span>
+                <span class="selo-ao-vivo"><i></i> SEMIFINAIS</span>
                 <h1 id="titulo-principal">GUIA DA<br>COPA 2026.</h1>
                 <p>Resultados, 48 seleções e o calendário completo das 104 partidas em um só lugar.</p>
                 <a class="botao-branco" href="#agora">Ver status atual <span aria-hidden="true">↓</span></a>
@@ -47,35 +53,35 @@
         <section class="agora" id="agora" aria-labelledby="titulo-agora">
             <div class="agora-cabecalho">
                 <div>
-                    <p class="rotulo">STATUS EM 05 DE JULHO</p>
+                    <p class="rotulo">STATUS EM 13 DE JULHO</p>
                     <h2 id="titulo-agora">A Copa agora</h2>
                 </div>
-                <span class="atualizacao">Atualizado às 20h09 BRT</span>
+                <span class="atualizacao">Atualizado às 19h46 BRT</span>
             </div>
 
             <div class="destaques-agora">
-                <article class="placar-destaque brasil-placar">
-                    <div class="placar-meta"><span>ENCERRADO</span><span>PARTIDA 91</span></div>
-                    <p>OITAVAS DE FINAL · NOVA YORK/NOVA JERSEY</p>
+                <article class="placar-destaque argentina-placar">
+                    <div class="placar-meta"><span>ENCERRADO</span><span>PARTIDA 100</span></div>
+                    <p>QUARTAS DE FINAL · KANSAS CITY</p>
                     <div class="placar-times">
-                        <strong><img src="/static/img/flags/br.svg" alt=""> Brasil</strong>
-                        <b>1 — 2</b>
-                        <strong>Noruega <img src="/static/img/flags/no.svg" alt=""></strong>
+                        <strong><img src="/static/img/flags/ar.svg" alt=""> Argentina</strong>
+                        <b>3 — 1</b>
+                        <strong>Suíça <img src="/static/img/flags/ch.svg" alt=""></strong>
                     </div>
-                    <small>Brasil eliminado nas oitavas de final.</small>
+                    <small>Após a prorrogação, a Argentina avançou à semifinal.</small>
                 </article>
 
                 <div class="status-lateral">
                     <article>
-                        <span class="status-numero">03</span>
-                        <div><b>NAS QUARTAS</b><p>França, Países Baixos e Noruega já avançaram.</p></div>
+                        <span class="status-numero">04</span>
+                        <div><b>NA SEMIFINAL</b><p>França, Espanha, Inglaterra e Argentina seguem na disputa.</p></div>
                     </article>
                     <article>
-                        <span class="status-numero">01</span>
-                        <div><b>JOGO HOJE</b><p>México x Inglaterra fecha as oitavas.</p></div>
+                        <span class="status-numero">02</span>
+                        <div><b>SEMIFINAIS</b><p>Os finalistas serão definidos em 14 e 15 de julho.</p></div>
                     </article>
                     <article>
-                        <span class="status-numero">14</span>
+                        <span class="status-numero">04</span>
                         <div><b>JOGOS RESTANTES</b><p>Incluindo a decisão em 19 de julho.</p></div>
                     </article>
                 </div>
@@ -83,12 +89,12 @@
 
             <div class="jogos-hoje">
                 <div class="jogos-hoje-titulo">
-                    <h3>Jogos de hoje</h3>
+                    <h3>Próximos jogos</h3>
                     <span>Horários de Brasília</span>
                 </div>
                 <div class="hoje-grade">
-                    <article><span>ENCERRADO</span><b><span><img src="/static/img/flags/br.svg" alt=""> Brasil</span><em>1–2</em><span>Noruega <img src="/static/img/flags/no.svg" alt=""></span></b><p>Nova York/Nova Jersey</p></article>
-                    <article><span>22H00</span><b><span><img src="/static/img/flags/mx.svg" alt=""> México</span><em>×</em><span>Inglaterra <img src="/static/img/flags/gb-eng.svg" alt=""></span></b><p>Cidade do México</p></article>
+                    <article><span>14 JUL · 16H00</span><b><span><img src="/static/img/flags/fr.svg" alt=""> França</span><em>×</em><span>Espanha <img src="/static/img/flags/es.svg" alt=""></span></b><p>Dallas</p></article>
+                    <article><span>15 JUL · 16H00</span><b><span><img src="/static/img/flags/gb-eng.svg" alt=""> Inglaterra</span><em>×</em><span>Argentina <img src="/static/img/flags/ar.svg" alt=""></span></b><p>Atlanta</p></article>
                 </div>
             </div>
         </section>

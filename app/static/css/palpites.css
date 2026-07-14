@@ -95,6 +95,27 @@ a {
     display: none;
 }
 
+.nav-sair {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.nav-sair button {
+    border: 0;
+    padding: 0;
+    background: none;
+    color: var(--cinza);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.nav-sair button:hover {
+    color: var(--preto);
+}
+
 .botao {
     border: 0;
     min-height: 46px;
@@ -477,6 +498,25 @@ h1 {
     border-bottom: 1px solid var(--borda);
 }
 
+.formulario-estreito {
+    width: min(560px, 100%);
+}
+
+.formulario-simples {
+    padding: clamp(28px, 5vw, 54px);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-bottom: 1px solid var(--borda);
+}
+
+.participante-logado {
+    margin: 0;
+    padding: 16px 18px;
+    background: var(--papel);
+    font-size: .9rem;
+}
+
 .bloco-titulo {
     display: flex;
     gap: 18px;
@@ -736,6 +776,15 @@ footer p {
         background: var(--verde);
         color: var(--branco);
         text-align: center;
+    }
+
+    .cabecalho nav .nav-sair {
+        margin-top: 4px;
+        padding: 14px 0;
+    }
+
+    .cabecalho nav .nav-sair button {
+        font-size: 14px;
     }
 
     .cabecalho-cta {

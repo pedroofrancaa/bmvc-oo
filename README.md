@@ -8,6 +8,12 @@ O Nível 2 acrescenta uma área de palpites com modelo Python e CRUD completo
 (criar, listar, visualizar, editar e excluir). Os palpites são persistidos
 localmente em um banco SQLite criado automaticamente na primeira execução.
 
+O Nível 3 acrescenta controle de acesso de usuários: cadastro e login com
+senha em hash (PBKDF2 + salt), sessão via cookie assinado do Bottle, e uma
+página de acesso restrito ("Meus palpites") visível apenas para quem está
+logado. Criar, editar e excluir palpites agora exige login, e cada palpite
+só pode ser editado/excluído pelo usuário que o criou.
+
 As bandeiras são arquivos SVG locais do projeto e a interface utiliza
 Inter para textos e Impact para os títulos editoriais.
 
@@ -20,8 +26,11 @@ Inter para textos e Impact para os títulos editoriais.
 ## Rotas principais
 
 - `/copa`: guia da Copa já existente
-- `/palpites`: lista de palpites
-- `/palpites/novo`: formulário de cadastro
+- `/palpites`: lista de palpites (pública)
+- `/palpites/novo`: formulário de cadastro (exige login)
+- `/palpites/meus`: área restrita com os palpites do usuário logado
+- `/registro`: criação de conta
+- `/login` / `/logout`: autenticação
 
 ## Executar com Docker
 

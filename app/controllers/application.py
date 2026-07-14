@@ -1,9 +1,11 @@
 import json
 import os
+import re
 from datetime import datetime
 
 from bottle import template
 from app.models.palpite import Palpite
+from app.models.usuario import Usuario
 
 
 DB_DIR = os.path.join(os.path.dirname(__file__), 'db')
@@ -12,19 +14,20 @@ DB_DIR = os.path.join(os.path.dirname(__file__), 'db')
 class Application():
 
     def __init__(self):
+        self.usuarios = Usuario()
         self.palpites = Palpite()
         self.pages = {
             'copa': self.copa,
         }
 
 
-    def render(self, page):
+    def render(self, page, usuario=None):
         content = self.pages.get(page, self.copa)
-        return content()
+        return content(usuario)
 
 
-    def copa(self):
-        return template('app/views/html/copa')
+    def copa(self, usuario=None):
+        return template('app/views/html/copa', usuario=usuario)
 
 
     def copa_dados(self):
@@ -42,7 +45,7 @@ class Application():
         'finais': 'Decisão',
     }
 
-    def listar_palpites(self, mensagem=''):
+    def listar_palpites(self, mensagem='', usuario=None):
         dados_copa = self.copa_dados()
         indice = {p['numero']: p for p in dados_copa['partidas']}
         grupos = {}
@@ -79,16 +82,34 @@ class Application():
             grupos=list(grupos.values()),
             total_palpites=total_palpites,
             mensagem=mensagem,
+            usuario=usuario,
         )
 
 
-    def detalhe_palpite(self, palpite):
+    def detalhe_palpite(self, palpite, usuario=None):
         try:
             criado_em = datetime.fromisoformat(palpite['criado_em'])
             palpite['criado_em_formatado'] = criado_em.strftime('%d/%m/%Y às %H:%M')
         except (KeyError, TypeError, ValueError):
             palpite['criado_em_formatado'] = 'data não informada'
-        return template('app/views/html/palpite_detalhe', palpite=palpite)
+        return template('app/views/html/palpite_detalhe', palpite=palpite, usuario=usuario)
+
+
+    def meus_palpites(self, usuario, mensagem=''):
+        dados_copa = self.copa_dados()
+        indice = {p['numero']: p for p in dados_copa['partidas']}
+        palpites = []
+        for palpite in self.palpites.por_usuario(usuario['id']):
+            partida = indice.get(palpite['partida_numero'], {})
+            palpite['contexto'] = self._NOMES_FASE.get(partida.get('fase', ''), 'Partida')
+            palpite['sede'] = partida.get('sede', '')
+            palpites.append(palpite)
+        return template(
+            'app/views/html/meus_palpites',
+            palpites=palpites,
+            usuario=usuario,
+            mensagem=mensagem,
+        )
 
 
     def _time_indefinido(self, nome):
@@ -109,7 +130,7 @@ class Application():
         return sorted(vivas)
 
 
-    def formulario_palpite(self, palpite=None, erro=''):
+    def formulario_palpite(self, usuario, palpite=None, erro=''):
         dados_copa = self.copa_dados()
         partidas = [
             {
@@ -129,14 +150,11 @@ class Application():
             partidas=partidas,
             selecoes_vivas=self._selecoes_vivas(dados_copa),
             erro=erro,
+            usuario=usuario,
         )
 
 
-    def validar_palpite(self, formulario):
-        participante = formulario.get('participante', '').strip()
-        if len(participante) < 2:
-            raise ValueError('Informe um nome com pelo menos 2 caracteres.')
-
+    def validar_palpite(self, formulario, usuario):
         try:
             partida_numero = int(formulario.get('partida_numero', ''))
             gols_mandante = int(formulario.get('gols_mandante', ''))
@@ -169,7 +187,8 @@ class Application():
             raise ValueError('Escolha duas seleções diferentes para o confronto.')
 
         return {
-            'participante': participante,
+            'participante': usuario['nome'],
+            'usuario_id': usuario['id'],
             'partida_numero': partida_numero,
             'mandante': mandante,
             'visitante': visitante,
@@ -188,3 +207,54 @@ class Application():
         if escolha not in vivas:
             raise ValueError(f'A {posicao} seleção escolhida não está mais na disputa.')
         return escolha
+
+
+    #-------------------------------------------------------------------------
+    # Autenticação (Nível III)
+
+    def formulario_login(self, erro='', mensagem='', proximo='/palpites', login_sugerido=''):
+        return template(
+            'app/views/html/login',
+            erro=erro, mensagem=mensagem, proximo=proximo, login_sugerido=login_sugerido,
+        )
+
+
+    def formulario_registro(self, formulario=None, erro=''):
+        return template(
+            'app/views/html/registro', formulario=formulario or {}, erro=erro
+        )
+
+
+    def autenticar(self, login, senha):
+        login = login.strip().lower()
+        usuario = self.usuarios.buscar_por_login(login)
+        if not usuario or not self.usuarios.verificar_senha(usuario, senha):
+            return None
+        return usuario
+
+
+    def registrar_usuario(self, formulario):
+        nome = formulario.get('nome', '').strip()
+        login = formulario.get('login', '').strip().lower()
+        senha = formulario.get('senha', '')
+        confirmar_senha = formulario.get('confirmar_senha', '')
+
+        if len(nome) < 2:
+            raise ValueError('Informe um nome com pelo menos 2 caracteres.')
+        if len(nome) > 80:
+            raise ValueError('O nome deve ter no máximo 80 caracteres.')
+        if len(login) < 3:
+            raise ValueError('O login deve ter pelo menos 3 caracteres.')
+        if len(login) > 60:
+            raise ValueError('O login deve ter no máximo 60 caracteres.')
+        if not re.fullmatch(r'[a-z0-9._-]+', login):
+            raise ValueError('Use apenas letras, números, ponto, hífen ou sublinhado no login.')
+        if len(senha) < 6:
+            raise ValueError('A senha deve ter pelo menos 6 caracteres.')
+        if senha != confirmar_senha:
+            raise ValueError('As senhas não conferem.')
+        if self.usuarios.buscar_por_login(login):
+            raise ValueError('Este login já está em uso.')
+
+        self.usuarios.criar(nome, login, senha)
+        return login

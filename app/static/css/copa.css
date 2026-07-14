@@ -104,6 +104,25 @@ nav a:hover {
     display: none;
 }
 
+.nav-sair {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.nav-sair button {
+    border: 0;
+    padding: 0;
+    background: none;
+    color: var(--cinza);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nav-sair button:hover {
+    color: var(--preto);
+}
+
 .botao-preto,
 .botao-branco {
     min-height: 46px;
@@ -569,8 +588,8 @@ footer > a:last-child {
     color: var(--branco);
 }
 
-.brasil-placar {
-    background: #087a47;
+.argentina-placar {
+    background: #2866a8;
 }
 
 .placar-meta {
@@ -1021,6 +1040,10 @@ footer > a:last-child {
 
     .nav-palpites {
         display: block;
+    }
+
+    .nav-sair {
+        padding: 16px 0;
     }
 
     .menu-botao {

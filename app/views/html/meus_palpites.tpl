@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Palpites dos torcedores para os jogos da Copa do Mundo de 2026.">
-    <title>Palpites | Copa do Mundo 2026</title>
+    <meta name="description" content="Área restrita com os palpites cadastrados pela sua conta.">
+    <title>Meus palpites | Copa do Mundo 2026</title>
     <link rel="stylesheet" href="/static/css/palpites.css?v=9">
     <script src="/static/js/palpites.js?v=6" defer></script>
 </head>
@@ -24,34 +24,23 @@
             <a href="/copa#selecoes">48 seleções</a>
             <a href="/copa#jogos">104 jogos</a>
             <a href="/copa#sedes">Sedes</a>
-            <a class="ativo" href="/palpites">Palpites</a>
-            % if usuario:
-            <a href="/palpites/meus">Meus palpites</a>
+            <a href="/palpites">Palpites</a>
+            <a class="ativo" href="/palpites/meus">Meus palpites</a>
             <a class="nav-novo-palpite" href="/palpites/novo">Novo palpite →</a>
             <form class="nav-sair" action="/logout" method="post"><button type="submit">Sair ({{usuario['nome']}})</button></form>
-            % else:
-            <a href="/login">Entrar</a>
-            <a class="nav-novo-palpite" href="/registro">Cadastrar →</a>
-            % end
         </nav>
-        % if usuario:
         <a class="botao botao-destaque cabecalho-cta" href="/palpites/novo">
             Novo palpite <span aria-hidden="true">→</span>
         </a>
-        % else:
-        <a class="botao botao-destaque cabecalho-cta" href="/login">
-            Entrar para palpitar <span aria-hidden="true">→</span>
-        </a>
-        % end
     </header>
 
     <main>
         <section class="cabecalho-pagina">
             <div>
-                <p class="rotulo">BOLÃO DA TORCIDA</p>
-                <h1>Seus palpites.<br>Seu jogo.</h1>
+                <p class="rotulo">ÁREA RESTRITA</p>
+                <h1>Meus<br>palpites.</h1>
             </div>
-            <p>Escolha uma partida, arrisque o placar e veja os palpites da torcida.</p>
+            <p>Só você vê e gerencia esta lista: {{usuario['nome']}}, conta {{usuario['login']}}.</p>
         </section>
 
         % if mensagem:
@@ -61,47 +50,39 @@
         <section class="conteudo" aria-labelledby="titulo-lista">
             <div class="titulo-lista">
                 <div>
-                    <p class="rotulo">BOLÃO DA TORCIDA</p>
-                    <h2 id="titulo-lista">Todos os palpites</h2>
+                    <p class="rotulo">CONTA {{usuario['login'].upper()}}</p>
+                    <h2 id="titulo-lista">Seus palpites</h2>
                 </div>
-                <span>{{total_palpites}} palpite{{'' if total_palpites == 1 else 's'}}</span>
+                <span>{{len(palpites)}} palpite{{'' if len(palpites) == 1 else 's'}}</span>
             </div>
 
-            % if grupos:
+            % if palpites:
             <div class="grade-palpites">
-                % for grupo in grupos:
+                % for palpite in palpites:
                 <article class="card-palpite">
                     <div class="card-meta">
-                        <span>JOGO {{str(grupo['partida_numero']).zfill(3)}}</span>
-                        <span>{{len(grupo['participantes'])}} {{'PALPITE' if len(grupo['participantes']) == 1 else 'PALPITES'}}</span>
+                        <span>JOGO {{str(palpite['partida_numero']).zfill(3)}}</span>
+                        <span>PALPITE #{{str(palpite['id']).zfill(3)}}</span>
                     </div>
-                    % if grupo.get('contexto'):
-                    <p class="contexto-partida">{{grupo['contexto']}}{{' · ' + grupo['sede'] if grupo.get('sede') else ''}}</p>
+                    % if palpite.get('contexto'):
+                    <p class="contexto-partida">{{palpite['contexto']}}{{' · ' + palpite['sede'] if palpite.get('sede') else ''}}</p>
                     % end
                     <div class="placar">
-                        <strong>{{grupo['mandante']}}</strong>
-                        <b>{{grupo['gols_mandante']}} <i>×</i> {{grupo['gols_visitante']}}</b>
-                        <strong>{{grupo['visitante']}}</strong>
+                        <strong>{{palpite['mandante']}}</strong>
+                        <b>{{palpite['gols_mandante']}} <i>×</i> {{palpite['gols_visitante']}}</b>
+                        <strong>{{palpite['visitante']}}</strong>
                     </div>
 
                     <div class="participantes-grupo">
-                        <p>{{'QUEM FEZ ESTE PALPITE' if len(grupo['participantes']) == 1 else 'QUEM FEZ ESTE MESMO PALPITE'}}</p>
-                        % for palpite in grupo['participantes']:
                         <div class="participante-linha">
-                            <a class="participante-nome" href="/palpites/{{palpite['id']}}">
-                                {{palpite['participante']}}
-                            </a>
+                            <a class="participante-nome" href="/palpites/{{palpite['id']}}">Ver detalhes</a>
                             <div class="participante-acoes">
-                                <a href="/palpites/{{palpite['id']}}">Ver</a>
-                                % if usuario and usuario['id'] == palpite.get('usuario_id'):
                                 <a href="/palpites/{{palpite['id']}}/editar">Editar</a>
                                 <form action="/palpites/{{palpite['id']}}/excluir" method="post" data-form-excluir>
                                     <button type="submit">Excluir</button>
                                 </form>
-                                % end
                             </div>
                         </div>
-                        % end
                     </div>
                 </article>
                 % end
@@ -109,9 +90,9 @@
             % else:
             <div class="vazio">
                 <span>0 × 0</span>
-                <h3>Ainda não há palpites.</h3>
-                <p>Cadastre o primeiro placar para começar o bolão.</p>
-                <a class="botao botao-escuro" href="{{'/palpites/novo' if usuario else '/login'}}">Criar primeiro palpite</a>
+                <h3>Você ainda não fez nenhum palpite.</h3>
+                <p>Escolha um confronto e arrisque o placar.</p>
+                <a class="botao botao-escuro" href="/palpites/novo">Criar meu primeiro palpite</a>
             </div>
             % end
         </section>

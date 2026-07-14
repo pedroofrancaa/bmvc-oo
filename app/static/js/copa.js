@@ -19,8 +19,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const nomesSituacao = {
         classificada: "Classificada",
+        semi: "Na semifinal",
         quartas: "Nas quartas",
         oitavas: "Nas oitavas",
+        "eliminada-quartas": "Eliminada nas quartas",
         "eliminada-oitavas": "Eliminada nas oitavas",
         "eliminada-32": "Eliminada na fase de 32",
         "eliminada-grupos": "Eliminada na fase de grupos"

@@ -24,7 +24,9 @@
             <a href="/copa#jogos">104 jogos</a>
             <a href="/copa#sedes">Sedes</a>
             <a class="ativo" href="/palpites">Palpites</a>
+            <a href="/palpites/meus">Meus palpites</a>
             <a class="nav-novo-palpite" href="/palpites/novo">Novo palpite →</a>
+            <form class="nav-sair" action="/logout" method="post"><button type="submit">Sair ({{usuario['nome']}})</button></form>
         </nav>
         <a class="botao botao-destaque cabecalho-cta" href="/palpites/novo">
             Novo palpite <span aria-hidden="true">→</span>
@@ -51,14 +53,10 @@
                         <span>01</span>
                         <div>
                             <h2>Quem está palpitando?</h2>
-                            <p>Informe o nome que aparecerá na lista da torcida.</p>
+                            <p>O palpite fica associado à sua conta logada.</p>
                         </div>
                     </div>
-                    <label>
-                        <span>Nome do participante</span>
-                        <input type="text" name="participante" value="{{palpite.get('participante', '')}}"
-                               placeholder="Digite seu nome" minlength="2" maxlength="80" required autofocus>
-                    </label>
+                    <p class="participante-logado">Palpitando como <strong>{{usuario['nome']}}</strong></p>
                 </div>
 
                 <div class="formulario-bloco">

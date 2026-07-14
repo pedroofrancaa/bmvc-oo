@@ -24,11 +24,19 @@
             <a href="/copa#jogos">104 jogos</a>
             <a href="/copa#sedes">Sedes</a>
             <a class="ativo" href="/palpites">Palpites</a>
+            % if usuario:
+            <a href="/palpites/meus">Meus palpites</a>
             <a class="nav-novo-palpite" href="/palpites/novo">Novo palpite →</a>
+            <form class="nav-sair" action="/logout" method="post"><button type="submit">Sair ({{usuario['nome']}})</button></form>
+            % else:
+            <a href="/login">Entrar</a>
+            % end
         </nav>
+        % if usuario:
         <a class="botao botao-destaque cabecalho-cta" href="/palpites/novo">
             Novo palpite <span aria-hidden="true">→</span>
         </a>
+        % end
     </header>
 
     <main class="pagina-detalhe">
@@ -50,10 +58,12 @@
             <p class="data-registro">Enviado em {{palpite['criado_em_formatado']}}</p>
             <div class="acoes-detalhe">
                 <a href="/palpites">← Todos os palpites</a>
+                % if usuario and usuario['id'] == palpite.get('usuario_id'):
                 <a class="botao botao-escuro" href="/palpites/{{palpite['id']}}/editar">Editar palpite</a>
                 <form action="/palpites/{{palpite['id']}}/excluir" method="post" data-form-excluir>
                     <button class="botao botao-perigo" type="submit">Excluir</button>
                 </form>
+                % end
             </div>
         </article>
     </main>
