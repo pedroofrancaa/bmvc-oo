@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Palpites dos torcedores para os jogos da Copa do Mundo de 2026.">
     <title>Palpites | Copa do Mundo 2026</title>
-    <link rel="stylesheet" href="/static/css/palpites.css?v=9">
-    <script src="/static/js/palpites.js?v=6" defer></script>
+    <link rel="stylesheet" href="/static/css/palpites.css?v=10">
+    <script src="/static/js/palpites.js?v=7" defer></script>
 </head>
-<body>
+<body data-usuario-id="{{usuario['id'] if usuario else ''}}">
     <div class="faixa-superior">
         <p>COPA DO MUNDO 2026</p>
         <p>CANADÁ · MÉXICO · ESTADOS UNIDOS</p>
@@ -59,14 +59,24 @@
         % end
 
         <section class="conteudo" aria-labelledby="titulo-lista">
+            <div class="painel-tempo-real" data-painel-tempo-real>
+                <div class="status-tempo-real desconectado" id="status-tempo-real">
+                    <span aria-hidden="true"></span>
+                    <strong>Conectando ao vivo...</strong>
+                </div>
+                <p><strong id="usuarios-online">0</strong> acompanhando agora</p>
+            </div>
+            <div class="aviso-tempo-real" id="aviso-tempo-real" role="status" aria-live="polite" hidden></div>
+
             <div class="titulo-lista">
                 <div>
                     <p class="rotulo">BOLÃO DA TORCIDA</p>
                     <h2 id="titulo-lista">Todos os palpites</h2>
                 </div>
-                <span>{{total_palpites}} palpite{{'' if total_palpites == 1 else 's'}}</span>
+                <span id="total-palpites">{{total_palpites}} palpite{{'' if total_palpites == 1 else 's'}}</span>
             </div>
 
+            <div id="lista-palpites" class="lista-palpites" aria-live="polite">
             % if grupos:
             <div class="grade-palpites">
                 % for grupo in grupos:
@@ -114,6 +124,7 @@
                 <a class="botao botao-escuro" href="{{'/palpites/novo' if usuario else '/login'}}">Criar primeiro palpite</a>
             </div>
             % end
+            </div>
         </section>
     </main>
 

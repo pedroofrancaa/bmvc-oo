@@ -13,9 +13,9 @@ DB_DIR = os.path.join(os.path.dirname(__file__), 'db')
 
 class Application():
 
-    def __init__(self):
-        self.usuarios = Usuario()
-        self.palpites = Palpite()
+    def __init__(self, db_path=None):
+        self.usuarios = Usuario(db_path) if db_path else Usuario()
+        self.palpites = Palpite(db_path) if db_path else Palpite()
         self.pages = {
             'copa': self.copa,
         }
@@ -45,7 +45,8 @@ class Application():
         'finais': 'Decisão',
     }
 
-    def listar_palpites(self, mensagem='', usuario=None):
+    def estado_palpites(self):
+        """Retorna o estado publico do bolao, pronto para HTML ou WebSocket."""
         dados_copa = self.copa_dados()
         indice = {p['numero']: p for p in dados_copa['partidas']}
         grupos = {}
@@ -77,10 +78,19 @@ class Application():
             grupos[chave]['participantes'].append(palpite)
             total_palpites += 1
 
+        return {
+            'grupos': list(grupos.values()),
+            'total_palpites': total_palpites,
+        }
+
+
+    def listar_palpites(self, mensagem='', usuario=None):
+        estado = self.estado_palpites()
+
         return template(
             'app/views/html/palpites',
-            grupos=list(grupos.values()),
-            total_palpites=total_palpites,
+            grupos=estado['grupos'],
+            total_palpites=estado['total_palpites'],
             mensagem=mensagem,
             usuario=usuario,
         )

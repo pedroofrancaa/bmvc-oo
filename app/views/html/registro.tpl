@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Crie sua conta para participar do bolão da Copa do Mundo 2026.">
     <title>Cadastrar | Copa do Mundo 2026</title>
-    <link rel="stylesheet" href="/static/css/palpites.css?v=9">
-    <script src="/static/js/palpites.js?v=6" defer></script>
+    <link rel="stylesheet" href="/static/css/palpites.css?v=10">
+    <script src="/static/js/palpites.js?v=7" defer></script>
 </head>
 <body>
     <div class="faixa-superior">

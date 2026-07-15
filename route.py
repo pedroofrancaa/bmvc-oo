@@ -1,14 +1,19 @@
 import json
 import os
+from datetime import datetime, timezone
 from urllib.parse import urlencode
 
 from app.controllers.application import Application
-from bottle import Bottle, abort, run, request, static_file
+from app.controllers.tempo_real import PainelTempoReal
+from bottle import Bottle, abort, request, static_file
 from bottle import redirect, response
+from simple_websocket import ConnectionClosed, Server
+from werkzeug.serving import run_simple
 
 
 app = Bottle()
 ctl = Application()
+tempo_real = PainelTempoReal()
 
 # Chave de assinatura do cookie de sessão. Em produção, viria de uma
 # variável de ambiente em vez de ficar hardcoded no repositório.
@@ -40,6 +45,30 @@ def exigir_login():
     if not usuario:
         redirect('/login?' + urlencode({'proximo': request.path}))
     return usuario
+
+
+def agora_iso():
+    return datetime.now(timezone.utc).isoformat(timespec='seconds')
+
+
+def publicar_alteracao_palpite(acao, palpite):
+    verbos = {
+        'criado': 'adicionou',
+        'atualizado': 'atualizou',
+        'excluido': 'removeu',
+    }
+    mensagem = (
+        f"{palpite['participante']} {verbos[acao]} o palpite "
+        f"{palpite['mandante']} {palpite['gols_mandante']} x "
+        f"{palpite['gols_visitante']} {palpite['visitante']}."
+    )
+    tempo_real.publicar({
+        'tipo': 'palpites_atualizados',
+        'acao': acao,
+        'mensagem': mensagem,
+        'momento': agora_iso(),
+        'estado': ctl.estado_palpites(),
+    })
 
 
 #-----------------------------------------------------------------------------
@@ -74,6 +103,58 @@ def palpites():
     return ctl.listar_palpites(request.query.get('mensagem', ''), usuario_atual())
 
 
+@app.route('/palpites/dados', method='GET')
+def palpites_dados():
+    response.content_type = 'application/json'
+    response.set_header('Cache-Control', 'no-store')
+    return json.dumps(ctl.estado_palpites(), ensure_ascii=False)
+
+
+@app.route('/ws/palpites', method='GET')
+def websocket_palpites():
+    websocket = Server.accept(
+        request.environ,
+        ping_interval=25,
+        max_message_size=4096,
+    )
+    tempo_real.registrar(websocket)
+    tempo_real.enviar(websocket, {
+        'tipo': 'estado_palpites',
+        'momento': agora_iso(),
+        'estado': ctl.estado_palpites(),
+    })
+
+    try:
+        while True:
+            mensagem = websocket.receive()
+            try:
+                evento = json.loads(mensagem)
+            except (json.JSONDecodeError, TypeError):
+                tempo_real.enviar(websocket, {
+                    'tipo': 'erro',
+                    'mensagem': 'Mensagem WebSocket invalida.',
+                })
+                continue
+
+            if evento.get('tipo') == 'solicitar_estado':
+                tempo_real.enviar(websocket, {
+                    'tipo': 'estado_palpites',
+                    'momento': agora_iso(),
+                    'estado': ctl.estado_palpites(),
+                })
+            elif evento.get('tipo') == 'ping':
+                tempo_real.enviar(websocket, {
+                    'tipo': 'pong',
+                    'momento': agora_iso(),
+                })
+    except ConnectionClosed:
+        pass
+    finally:
+        tempo_real.remover(websocket)
+
+    return ''
+
+
 @app.route('/palpites/novo', method=['GET', 'POST'])
 def novo_palpite():
     usuario = exigir_login()
@@ -85,6 +166,7 @@ def novo_palpite():
     try:
         dados = ctl.validar_palpite(formulario, usuario)
         palpite_id = ctl.palpites.criar(dados)
+        publicar_alteracao_palpite('criado', ctl.palpites.buscar(palpite_id))
         return redirect(f'/palpites/{palpite_id}?mensagem=Palpite criado com sucesso')
     except ValueError as erro:
         return ctl.formulario_palpite(usuario, formulario, str(erro))
@@ -117,6 +199,7 @@ def editar_palpite(palpite_id):
         dados = ctl.validar_palpite(formulario, usuario)
         if not ctl.palpites.atualizar(palpite_id, dados, usuario['id']):
             abort(403, 'Você só pode editar os seus próprios palpites.')
+        publicar_alteracao_palpite('atualizado', ctl.palpites.buscar(palpite_id))
         return redirect(f'/palpites/{palpite_id}?mensagem=Palpite atualizado com sucesso')
     except ValueError as erro:
         return ctl.formulario_palpite(usuario, formulario, str(erro))
@@ -133,6 +216,7 @@ def excluir_palpite(palpite_id):
 
     if not ctl.palpites.excluir(palpite_id, usuario['id']):
         abort(403, 'Você só pode excluir os seus próprios palpites.')
+    publicar_alteracao_palpite('excluido', palpite)
     return redirect('/palpites?mensagem=Palpite excluído com sucesso')
 
 
@@ -194,5 +278,11 @@ def logout():
 
 
 if __name__ == '__main__':
-
-    run(app, host='0.0.0.0', port=8080, debug=True)
+    run_simple(
+        hostname='0.0.0.0',
+        port=8080,
+        application=app,
+        use_debugger=os.environ.get('BMVC_DEBUG', '1') == '1',
+        use_reloader=False,
+        threaded=True,
+    )
